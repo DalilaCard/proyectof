@@ -1,0 +1,11 @@
+com\upiiz\ProyectoF\config\OpenApiConfiguration.class
+com\upiiz\ProyectoF\entities\UserEntity.class
+com\upiiz\ProyectoF\config\SecurityConfig.class
+com\upiiz\ProyectoF\repositories\UserRepository.class
+com\upiiz\ProyectoF\services\DepartmentService.class
+com\upiiz\ProyectoF\services\UserService.class
+com\upiiz\ProyectoF\entities\DepartmentEntity.class
+com\upiiz\ProyectoF\controllers\DepartmentController.class
+com\upiiz\ProyectoF\ProyectoFApplication.class
+com\upiiz\ProyectoF\controllers\AuthController.class
+com\upiiz\ProyectoF\repositories\DepartmentRepository.class
