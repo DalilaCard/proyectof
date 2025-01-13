@@ -1,5 +1,6 @@
 package com.upiiz.ProyectoF.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,36 +17,43 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final AuthenticationConfiguration authenticationConfiguration;
+    @Autowired
+    AuthenticationConfiguration authenticationConfiguration;
+//    private final AuthenticationConfiguration authenticationConfiguration;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration) {
-        this.authenticationConfiguration = authenticationConfiguration;
-    }
+//    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration) {
+//        this.authenticationConfiguration = authenticationConfiguration;
+//    }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf().disable()
-                .httpBasic(Customizer.withDefaults()) // Habilitar autenticación básica
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No mantener estado en sesiones
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // Permitir acceso a Swagger
-                        .requestMatchers(HttpMethod.GET, "/api/v1/departments/**").hasAuthority("READ") // Solo lectura
-                        .requestMatchers(HttpMethod.POST, "/api/v1/departments/**").hasAuthority("CREATE") // Crear
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/departments/**").hasAuthority("UPDATE") // Actualizar
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/departments/**").hasAuthority("DELETE") // Eliminar
-                        .anyRequest().authenticated() // Todas las demás rutas requieren autenticación
-                )
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity
+                .cors().and().csrf().disable()
+                .httpBasic(Customizer.withDefaults())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(http->{
+                    http.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").hasAnyAuthority("CREATE");
+                    http.requestMatchers(HttpMethod.GET, "/api/v1/departments").hasAnyAuthority("READ");
+                    http.requestMatchers(HttpMethod.GET, "/api/v1/departments/{id}").hasAnyAuthority("READ");
+                    http.requestMatchers(HttpMethod.POST, "/api/v1/departments").hasAnyAuthority("CREATE");
+                    http.requestMatchers(HttpMethod.PUT, "/api/v1/departments/{id}").hasAnyAuthority("UPDATE");
+                    http.requestMatchers(HttpMethod.DELETE, "/api/v1/departments/{id}").hasAnyAuthority("DELETE");
+                    http.requestMatchers(HttpMethod.POST, "/api/v1/departments/login").hasAnyAuthority("READ");
+                    http.anyRequest().authenticated();
+                })
                 .build();
     }
 
@@ -55,32 +63,69 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(passwordEncoder());
-        provider.setUserDetailsService(userDetailsService());
-        return provider;
+    public AuthenticationProvider authenticationProvider(){
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService());
+        return daoAuthenticationProvider;
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public PasswordEncoder passwordEncoder(){
+        return NoOpPasswordEncoder.getInstance();
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
+    public UserDetailsService userDetailsService(){
+        //Definir usuario en memoria
+        //No vamos a obtenerlos de una basade datos
         UserDetails admin = User.withUsername("admin")
-                .password(passwordEncoder().encode("admin1234"))
+                .password("admin1234")
                 .roles("ADMIN")
-                .authorities("READ", "CREATE", "UPDATE", "DELETE")
+                .authorities("READ", "CREATE","UPDATE","DELETE")
                 .build();
 
         UserDetails user = User.withUsername("user")
-                .password(passwordEncoder().encode("user1234"))
+                .password("user1234")
                 .roles("USER")
                 .authorities("READ")
                 .build();
 
-        return new InMemoryUserDetailsManager(admin, user);
+        UserDetails moderator = User.withUsername("moderator")
+                .password("moderator1234")
+                .roles("MODERATOR")
+                .authorities("READ", "UPDATE")
+                .build();
+
+        UserDetails editor = User.withUsername("editor")
+                .password("editor1234")
+                .roles("EDITOR")
+                .authorities("UPDATE")
+                .build();
+
+        UserDetails developer = User.withUsername("developer")
+                .password("developer1234")
+                .roles("DEVELOPER")
+                .authorities("READ", "WRITE", "UPDATE", "DELETE", "CREATE-USER")
+                .build();
+
+        UserDetails analyst = User.withUsername("analyst")
+                .password("analyst1234")
+                .roles("ANALYST")
+                .authorities("READ", "UPDATE")
+                .build();
+
+
+        List<UserDetails> userDetailsList = new ArrayList<UserDetails>();
+
+
+        userDetailsList.add(admin);
+        userDetailsList.add(user);
+        userDetailsList.add(moderator);
+        userDetailsList.add(editor);
+        userDetailsList.add(developer);
+        userDetailsList.add(analyst);
+
+        return new InMemoryUserDetailsManager(admin, user, moderator, editor, developer, analyst);
     }
 }

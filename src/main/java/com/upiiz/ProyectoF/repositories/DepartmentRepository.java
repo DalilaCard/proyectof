@@ -9,5 +9,6 @@ import java.util.List;
 
 @Repository
 public interface DepartmentRepository extends JpaRepository<DepartmentEntity, Long> {
-    List<DepartmentEntity> findByUserId(String userId); // Obtiene los departamentos de un usuario específico
+    @Query("SELECT r FROM DepartmentEntity r WHERE r.departmentId = :id")
+    DepartmentEntity findDepartmentEntityById(@Param("id") Long id);
 }
