@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.List;
 @RestController
 @RequestMapping("/api/v1/departments")
-@CrossOrigin(origins = "https://proyectofin.vercel.app")
+@CrossOrigin(origins = "https://proyectofin-three.vercel.app")
 @Tag(
         name = "Departments"
 )
