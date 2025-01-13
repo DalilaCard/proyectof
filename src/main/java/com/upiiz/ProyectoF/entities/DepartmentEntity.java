@@ -23,25 +23,4 @@ public class DepartmentEntity {
     @Column(name = "usr")
     private String user;
 
-//    @Version
-//    @Column(name = "version")
-//    private Integer version;
-
-//    @Column(name = "created_at", nullable = false, updatable = false)
-//    private java.time.LocalDateTime createdAt;
-//
-//    @Column(name = "updated_at")
-//    private java.time.LocalDateTime updatedAt;
-//
-//    @PrePersist
-//    protected void onCreate() {
-//        this.createdAt = java.time.LocalDateTime.now();
-//    }
-
-//    @PreUpdate
-//    protected void onUpdate() {
-//        this.updatedAt = java.time.LocalDateTime.now();
-//    }
-
-
 }
