@@ -16,7 +16,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -30,16 +29,13 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
+
     @Autowired
     AuthenticationConfiguration authenticationConfiguration;
-//    private final AuthenticationConfiguration authenticationConfiguration;
-
-//    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration) {
-//        this.authenticationConfiguration = authenticationConfiguration;
-//    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+
         return httpSecurity
                 .cors().and().csrf().disable()
                 .httpBasic(Customizer.withDefaults())
@@ -57,12 +53,14 @@ public class SecurityConfig {
                 .build();
     }
 
+    //MAneager
     @Bean
-    public AuthenticationManager authenticationManager() throws Exception {
+    public AuthenticationManager authenticationManager() throws Exception{
         return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
+    //Authenticanti provider
     public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
@@ -70,11 +68,13 @@ public class SecurityConfig {
         return daoAuthenticationProvider;
     }
 
+    //Password encoder
     @Bean
     public PasswordEncoder passwordEncoder(){
         return NoOpPasswordEncoder.getInstance();
     }
 
+    //User data servuice
     @Bean
     public UserDetailsService userDetailsService(){
         //Definir usuario en memoria

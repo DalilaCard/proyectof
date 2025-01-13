@@ -14,7 +14,7 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**") // Ajusta según tus endpoints
-                        .allowedOrigins("https://proyectofin-three.vercel.app/")//CAMBIALOOOOOOOOOO
+                        .allowedOrigins("https://proyectofin-three.vercel.app")//CAMBIALOOOOOOOOOO
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
