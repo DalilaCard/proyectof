@@ -11,7 +11,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/departments")
-@CrossOrigin(origins = "https://proyectofin.vercel.app") //CAMBIALOOOOOOO
+@CrossOrigin(origins = "https://proyectofin-three.vercel.app")
 public class LoginController {
 
     private final UserDetailsService userDetailsService;
