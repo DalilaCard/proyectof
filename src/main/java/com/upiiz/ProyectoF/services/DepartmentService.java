@@ -36,27 +36,4 @@ public class DepartmentService {
         return departmentRepository.save(department);
     }
 
-
-//    public List<DepartmentEntity> getAllDepartments(String userId) {
-//        return repository.findByUserId(userId); // Solo departamentos del usuario autenticado
-//    }
-//
-//    public DepartmentEntity getDepartmentById(Integer id) {
-//        return repository.findById(Long.valueOf(id)).orElse(null);
-//    }
-//
-//    public DepartmentEntity createDepartment(DepartmentEntity department) {
-//        return repository.save(department);
-//    }
-//
-//    public DepartmentEntity updateDepartment(Integer id, DepartmentEntity department) {
-//        return repository.findById(Long.valueOf(id)).map(existing -> {
-//            existing.setDepartmentName(department.getDepartmentName());
-//            return repository.save(existing);
-//        }).orElseThrow(() -> new RuntimeException("Department not found"));
-//    }
-//
-//    public void deleteDepartment(Integer id) {
-//        repository.deleteById(Long.valueOf(id));
-//    }
 }
