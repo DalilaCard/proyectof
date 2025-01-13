@@ -25,8 +25,8 @@ public class DepartmentController {
     @Autowired
     private DepartmentService departmentService;
 
-    @GetMapping
     @PreAuthorize("hasAuthority('READ')")
+    @GetMapping
     public ResponseEntity<List<DepartmentEntity>> getDepartment(){
         return ResponseEntity.ok(departmentService.obtenerDepartments());
     }
